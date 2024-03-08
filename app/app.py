@@ -1,4 +1,4 @@
-from flask import Flask,render_template, redirect, request, url_for
+from flask import Flask,render_template, redirect, request, url_for,flash
 import mysql.connector
 #crear instancia
 
@@ -50,18 +50,17 @@ def registrar_usuario():
 def editar_usuario(codigo):
     cursor = db.cursor()
     if request.method == 'POST':
-        nombreperso = request.form.get('nombreperso')
-        apellidoperso = request.form.get('apellidoperso')
-        correoperso =  request.form.get('correoperso')
-        direccionperso = request.form.get('direccionperso')
-        telefonoperso = request.form.get('telefonoperso')
-        usuarioperso = request.form.get('usuarioperso')
-        passwordperso = request.form.get('passwordperso')
+        nombrep = request.form.get('nombre')
+        apellidop = request.form.get('apellido')
+        correop =  request.form.get('email_persona')
+        telefonop = request.form.get('telefono')
+        usuariop = request.form.get('usuario')
+        passwordp = request.form.get('contrasena')
+        direccionp = request.form.get('direccion')
 
 
-        sql = "UPDATE personas set nombre_persona=%s,apellido_persona=%s,direccion=%s,email_persona=%s,telefono=%s,usuario=%s,contrasena=%s where codigoperso=%s"
-        nombreperso = request.form.get['nombreperso']
-        cursor.execute(sql,(nombreperso,apellidoperso,direccionperso,correoperso,telefonoperso,usuarioperso,passwordperso,codigo))
+        sql = "UPDATE personas set nombre=%s,apellido=%s,direccion=%s,email_persona=%s,telefono=%s,usuario=%s,contrasena=%s where id_perso=%s"
+        cursor.execute(sql, (nombrep,apellidop,direccionp,correop,telefonop,usuariop,passwordp,codigo))
         db.commit()
 
         return redirect(url_for('Lista'))
@@ -70,8 +69,12 @@ def editar_usuario(codigo):
         cursor = db.cursor()
         cursor.execute('SELECT * FROM personas WHERE id_perso = %s',(codigo,))
         data = cursor.fetchall()
+    if data:    
 
         return render_template('editar.html', personas=data[0])
+    else:
+        flash('usuario no encontrado','error')
+        return redirect(url_for('lista'))
     
 @app.route('/eliminar/<int:codigo>', methods=['GET'])
 def eliminar_usuario(codigo):
