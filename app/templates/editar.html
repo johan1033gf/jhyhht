@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/editar.css')}}">
+  <title>Formulario de contacto</title>
+  
+
+<body>
+  <h2>Formulario de contacto</h2>
+  <form method="POST" actio="">
+    <div class="form-group">
+        <label>Codigo:</label>
+        <input type="number" id="codigo" name="idper" value="{{ personas[0] }}" disabled><br>
+      </div>
+    <div class="form-group">
+      <label>Nombre:</label>
+      <input type="text" id="nombre" name="nombreperso" value="{{ personas[1] }}"><br>
+    </div>
+    <div class="form-group">
+      <label>Apellido:</label>
+      <input type="text" name="apellidoperso" value="{{ personas[2] }}"><br>
+    </div>
+    <div class="form-group">
+      <label>Correo electrónico:</label>
+      <input type="email" name="correoperso" value="{{ personas[3] }}"><br>
+    </div>
+    <div class="form-group">
+      <label>Dirección:</label>
+      <input type="text" name="direccionperso" value="{{ personas[4] }}"><br>
+    </div>
+    <div class="form-group">
+      <label>Teléfono:</label>
+      <input type="tel" name="telefonoperso" value="{{ personas[5] }}"><br> 
+    </div>
+    <div class="form-group">
+      <label>Usuario:</label>
+      <input type="text" name="usuarioperso" value="{{ personas[6] }}" disabled><br>
+    </div>
+    <div class="form-group">
+        <label>Contraseña:</label>
+        <input type="password" id="password" name="passwordperso" value="{{ personas[7] }}"><br>
+      </div>
+    <div class="form-group">
+      <input type="submit" value="Registrar" name="REGISTRO"/>
+    </div>
+  </form>
+</head>
+</body>
+</html>
