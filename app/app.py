@@ -1,5 +1,6 @@
-from flask import Flask,render_template, redirect, request, url_for,flash
+from flask import Flask,render_template, redirect, request,url_for,flash,bcrypt
 import mysql.connector
+import bcrypt
 #crear instancia
 
 app = Flask (__name__)
@@ -14,7 +15,11 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 db.commit()
 
+def encriptarcontra(contraencrip):
+    #generar un hash de la contraseña mejor dicho un encriptado
+    encriptar = bcrypt.hashpw(contraencrip.encode('utf-8'),bcrypt.gensalt())
     
+    return encriptar
 @app.route('/')
 def Lista():
     cursor = db.cursor()
@@ -33,10 +38,13 @@ def registrar_usuario():
        TELEFONO = request.form.get('TELEFONO')
        USUARIO = request.form.get('USUARIO')
        CONTRASENA = request.form.get('CONTRASENA')
+       
+       contrasenaencriptada = encriptarcontra(CONTRASENA)
 
         #insertar datos
 
-       cursor.execute("INSERT INTO personas(nombre,apellido,email_persona,direccion,telefono,usuario,contrasena)values(%s,%s,%s,%s,%s,%s,%s)",(NOMBRE,APELLIDOS,CORREO_ELECTRONICO,DIRECCION,TELEFONO,USUARIO,CONTRASENA))
+       cursor.execute("INSERT INTO personas(nombre,apellido,email_persona,direccion,telefono,usuario,contrasena)values(%s,%s,%s,%s,%s,%s,%s)",
+                      (NOMBRE,APELLIDOS,CORREO_ELECTRONICO,DIRECCION,TELEFONO,USUARIO,contrasenaencriptada))
        db.commit()
        
 
@@ -78,9 +86,21 @@ def editar_usuario(codigo):
     
 @app.route('/eliminar/<int:codigo>', methods=['GET'])
 def eliminar_usuario(codigo):
+    cursor = db.cursor()
 
-    return redirect(url_for('Lista'))
+    if request.method == 'POST':
+        cursor.execute('DELETE FROM personas WHERE Idpersona = %s' (codigo))
+        db.commit()
+        flash('Este usuario se elimino correctamente', 'success')
+        return redirect(url_for('Lista'))
+    
+    else:
+        cursor.execute('SELECT * FROM personas WHERE Idpersona = %s', (codigo))
+        data = cursor.fetchone()
 
+        if data:
+            return render_template('eliminar.html', personas=data)
+        
 if __name__=='__main__':
     app.add_url_rule('/',view_func=Lista)
     app.run(debug=True,port=5005)
